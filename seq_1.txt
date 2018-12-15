@@ -1,0 +1,5 @@
+// komentar 1
+ACTGCACTGA
+ACTTGGAAAC
+
+
