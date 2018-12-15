@@ -24,11 +24,11 @@ public:
 
     unsigned long L1;
     unsigned long L2;
-    long maxL1;
-    long maxL2;
-    long leftover1;
-    long leftover2;
-    long totalLines;
+    unsigned long maxL1;
+    unsigned long maxL2;
+    unsigned long leftover1;
+    unsigned long leftover2;
+    unsigned long totalLines;
 
     vector<vector<vector<double>>> viterbi;
     vector<vector<vector<long>>> point;

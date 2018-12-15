@@ -68,23 +68,6 @@ void AlignmentModel::run(char *filenameA, char *filenameB) {
         }
     }
 
-    fileA.seekg(0, ios::beg);
-    fileB.seekg(0, ios::beg);
-
-//    cout << viterbi[5][5][2] << endl;
-//    cout << viterbi[0][0][0] << endl;
-
-//    char c;
-//    cout << "fileA size: " << L1 << endl;
-//    while (fileA.get(c)) {
-//        cout << c << endl;
-//    }
-//
-//    cout << endl << "fileB size: " << L2 << endl;
-//    while (fileB.get(c)) {
-//        cout << c << endl;
-//    }
-//
     fileA.close();
     fileB.close();
 }
@@ -131,28 +114,35 @@ void AlignmentModel::calculateDimensions(ifstream &fileA, ifstream &fileB) {
         }
     }
 
-//    cout << "L1: " << L1 << endl;
-//    cout << "L2: " << L2 << endl;
-
     if (L1 > L2) {
         maxL1 = sampleSize;
-        maxL2 = (long)ceil(L2 / (L1 / (double)maxL1));
+        maxL2 = (unsigned long)ceil(L2 / (L1 / (double)maxL1));
     } else {
         maxL2 = sampleSize;
-        maxL1 = (long)ceil(L1 / (L2 / (double)maxL2));
+        maxL1 = (unsigned long)ceil(L1 / (L2 / (double)maxL2));
     }
 
     leftover1 = L1 % maxL1;
     leftover2 = L2 % maxL2;
 
-//    cout << "Sample L1: " << maxL1 << endl;
-//    cout << "Sample L2: " << maxL2 << endl;
-//    cout << "Last line L1: " << leftover1<< endl;
-//    cout << "Last line L1: " << leftover2 << endl;
-//
-//    cout << "Total L1: " << (L1 / maxL1) * maxL1 + leftover1 << endl;
-//    cout << "Total L2: " << (L2 / maxL2) * maxL2 + leftover2 << endl;
-
     totalLines = (L1 / maxL1) + 1;
-//    cout << "Total lines: " << totalLines << endl;
+
+    fileA.clear();
+    fileB.clear();
+    fileA.seekg(0, ios::beg);
+    fileB.seekg(0, ios::beg);
+
+    // skip comment lines in both files
+    while (fileA.get(c)) {
+        if (c == '\n') {
+            break;
+        }
+    }
+    fileA.get(c);
+
+    while (fileB.get(c)) {
+        if (c == '\n') {
+            break;
+        }
+    }
 }
