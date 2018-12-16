@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <cmath>
+#include <cstdio>
 
 using namespace std;
 
@@ -96,6 +97,8 @@ void AlignmentModel::run(char *filenameA, char *filenameB) {
     fileB.close();
     outA.close();
     outB.close();
+
+    concatePredictions();
 }
 
 void AlignmentModel::reserveMemory(unsigned long l1, unsigned long l2) {
@@ -284,7 +287,7 @@ void AlignmentModel::traceback(long l1, long l2) {
 void AlignmentModel::convertPredictedAlignment(string &lineA, string &lineB) {
     vector<char> statePathCharacters;
     for (long i = statePath.size() - 1; i >= 0; i--) {
-        statePathCharacters.push_back((char)(statePath.at(i) + '0'));
+        statePathCharacters.push_back((char) (statePath.at(i) + '0'));
     }
 
     predictedAlignmentA.resize(statePath.size() - 2);
@@ -295,47 +298,26 @@ void AlignmentModel::convertPredictedAlignment(string &lineA, string &lineB) {
 
     for (int i = 1; i < statePathCharacters.size() - 1; i++) {
         if (statePathCharacters[i] == '1') {
-            predictedAlignmentA[i-1] = lineA[index1];
-            predictedAlignmentB[i-1] = lineB[index2];
+            predictedAlignmentA[i - 1] = lineA[index1];
+            predictedAlignmentB[i - 1] = lineB[index2];
             index1++;
             index2++;
         } else if (statePathCharacters[i] == '2') {
-            predictedAlignmentA[i-1] = lineA[index1];
-            predictedAlignmentB[i-1] = '-';
+            predictedAlignmentA[i - 1] = lineA[index1];
+            predictedAlignmentB[i - 1] = '-';
             index1++;
         } else if (statePathCharacters[i] == '3') {
-            predictedAlignmentA[i-1] = '-';
-            predictedAlignmentB[i-1] = lineB[index2];
+            predictedAlignmentA[i - 1] = '-';
+            predictedAlignmentB[i - 1] = lineB[index2];
             index2++;
         }
     }
-
-    cout << "State buffer: \n[";
-    for (int i = 0; i < statePathCharacters.size(); i++) {
-        cout << statePathCharacters[i];
-        if (i == statePathCharacters.size() - 1) {
-            cout << ']' << endl;
-        } else {
-            cout << ',';
-        }
-    }
-
-    cout << "Predicted alignment A: " << endl;
-    for (char i : predictedAlignmentA) {
-        cout << i;
-    }
-    cout << endl << "Predicted alignment B: " << endl;
-
-    for (char i : predictedAlignmentB) {
-        cout << i;
-    }
-    cout << endl;
 }
 
 void AlignmentModel::writePredictionHeaders(ofstream &fileA, ofstream &fileB) {
     for (char c : header1) {
         if (c == '\0') {
-          break;
+            break;
         }
         fileA << c;
     }
@@ -379,5 +361,16 @@ void AlignmentModel::writePredictions(ofstream &fileA, ofstream &fileB) {
 }
 
 void AlignmentModel::concatePredictions() {
+    ifstream file1("predictions/a.fasta");
+    ifstream file2("predictions/a.fasta");
+    ofstream combined_file("predictions/output.fasta");
+    combined_file << file1.rdbuf() << endl << file2.rdbuf();
+
+    combined_file.close();
+    file1.close();
+    file2.close();
+
+    remove("predictions/a.fasta");
+    remove("predictions/b.fasta");
 }
 
