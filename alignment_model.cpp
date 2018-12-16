@@ -28,6 +28,8 @@ AlignmentModel::AlignmentModel(unsigned long sample) {
             {0.25, 1.0 / 28.0, 1.0 / 28.0, 1.0 / 28.0, 1.0 /
                                                        7.0}    // {"G, -"}, {"G, A"}, {"G, T"}, {"G, C"}, {"G, G"},
     };
+
+    currentLine = 0;
 }
 
 AlignmentModel::~AlignmentModel() {
@@ -59,33 +61,41 @@ int AlignmentModel::charToIndex(char x) {
 void AlignmentModel::run(char *filenameA, char *filenameB) {
     ifstream fileA(filenameA);
     ifstream fileB(filenameB);
+    ofstream outA("predictions/a.fasta");
+    ofstream outB("predictions/b.fasta");
 
     L1 = 0;
     L2 = 1;
 
     calculateDimensions(fileA, fileB);
+    writePredictionHeaders(outA, outB);
 
     string lineA;
     string lineB;
     for (int i = 1; i <= totalLines; i++) {
-        cout << i << endl;
         reserveMemory(maxL1, maxL2);
         lineA = readLine(fileA, (int) maxL1);
         lineB = readLine(fileB, (int) maxL2);
         recursion(maxL1, maxL2, lineA, lineB);
         termination(maxL1, maxL2);
         traceback(maxL1, maxL2);
+        convertPredictedAlignment(lineA, lineB);
+        writePredictions(outA, outB);
     }
 
     reserveMemory(leftover1, leftover2);
     lineA = readLine(fileA, (int) leftover1);
     lineB = readLine(fileB, (int) leftover2);
-    recursion(leftover1, leftover2 - 1, lineA, lineB);
-    termination(leftover1, leftover2);
-    traceback(leftover1, leftover2 - 1);
+    recursion(leftover1 - 1, leftover2 - 1, lineA, lineB);
+    termination(leftover1 - 1, leftover2 - 1);
+    traceback(leftover1 - 1, leftover2 - 1);
+    convertPredictedAlignment(lineA, lineB);
+    writePredictions(outA, outB);
 
     fileA.close();
     fileB.close();
+    outA.close();
+    outB.close();
 }
 
 void AlignmentModel::reserveMemory(unsigned long l1, unsigned long l2) {
@@ -109,23 +119,33 @@ void AlignmentModel::reserveMemory(unsigned long l1, unsigned long l2) {
 void AlignmentModel::calculateDimensions(ifstream &fileA, ifstream &fileB) {
     char c;
     bool firstLine = false;
+    int i = 0;
     while (fileA.get(c)) {
         if (c != '\n' && c != '\0') {
             if (firstLine) {
                 L1 += 1;
+            } else {
+                header1[i] = c;
+                i++;
             }
         } else {
+            header1[i] = '\0';
             firstLine = true;
         }
     }
 
+    i = 0;
     firstLine = false;
     while (fileB.get(c)) {
         if (c != '\n' && c != '\0') {
             if (firstLine) {
                 L2 += 1;
+            } else {
+                header2[i] = c;
+                i++;
             }
         } else {
+            header2[i] = '\0';
             firstLine = true;
         }
     }
@@ -164,8 +184,6 @@ void AlignmentModel::calculateDimensions(ifstream &fileA, ifstream &fileB) {
 
 void AlignmentModel::recursion(long l1, long l2, string &line1, string &line2) {
     double max = 0;
-    cout << line1 << endl;
-    cout << line2 << endl;
     for (int i = 0; i <= l1; i++) {
         for (int j = 0; j <= l2; j++) {
             if (i == 0 && j == 0) {
@@ -261,5 +279,105 @@ void AlignmentModel::traceback(long l1, long l2) {
         }
         statePathIndex++;
     }
+}
+
+void AlignmentModel::convertPredictedAlignment(string &lineA, string &lineB) {
+    vector<char> statePathCharacters;
+    for (long i = statePath.size() - 1; i >= 0; i--) {
+        statePathCharacters.push_back((char)(statePath.at(i) + '0'));
+    }
+
+    predictedAlignmentA.resize(statePath.size() - 2);
+    predictedAlignmentB.resize(statePath.size() - 2);
+
+    long index1 = 0;
+    long index2 = 0;
+
+    for (int i = 1; i < statePathCharacters.size() - 1; i++) {
+        if (statePathCharacters[i] == '1') {
+            predictedAlignmentA[i-1] = lineA[index1];
+            predictedAlignmentB[i-1] = lineB[index2];
+            index1++;
+            index2++;
+        } else if (statePathCharacters[i] == '2') {
+            predictedAlignmentA[i-1] = lineA[index1];
+            predictedAlignmentB[i-1] = '-';
+            index1++;
+        } else if (statePathCharacters[i] == '3') {
+            predictedAlignmentA[i-1] = '-';
+            predictedAlignmentB[i-1] = lineB[index2];
+            index2++;
+        }
+    }
+
+    cout << "State buffer: \n[";
+    for (int i = 0; i < statePathCharacters.size(); i++) {
+        cout << statePathCharacters[i];
+        if (i == statePathCharacters.size() - 1) {
+            cout << ']' << endl;
+        } else {
+            cout << ',';
+        }
+    }
+
+    cout << "Predicted alignment A: " << endl;
+    for (char i : predictedAlignmentA) {
+        cout << i;
+    }
+    cout << endl << "Predicted alignment B: " << endl;
+
+    for (char i : predictedAlignmentB) {
+        cout << i;
+    }
+    cout << endl;
+}
+
+void AlignmentModel::writePredictionHeaders(ofstream &fileA, ofstream &fileB) {
+    for (char c : header1) {
+        if (c == '\0') {
+          break;
+        }
+        fileA << c;
+    }
+    for (char c : header2) {
+        if (c == '\0') {
+            break;
+        }
+        fileB << c;
+    }
+
+    fileA << endl;
+    fileB << endl;
+    fileA.flush();
+    fileB.flush();
+}
+
+void AlignmentModel::writePredictions(ofstream &fileA, ofstream &fileB) {
+    int temp = currentLine;
+    for (char i : predictedAlignmentA) {
+        fileA << i;
+        temp++;
+        if (temp > 60) {
+            temp = 0;
+            fileA << endl;
+        }
+    }
+
+    temp = currentLine;
+    for (char i : predictedAlignmentB) {
+        fileB << i;
+        temp++;
+        if (temp > 60) {
+            temp = 0;
+            fileB << endl;
+        }
+    }
+
+    currentLine = temp;
+    fileA.flush();
+    fileB.flush();
+}
+
+void AlignmentModel::concatePredictions() {
 }
 
