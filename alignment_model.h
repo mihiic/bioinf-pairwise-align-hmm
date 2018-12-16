@@ -24,7 +24,7 @@ public:
     void recursion(long, long, string&, string&);
     string readLine(ifstream&, int);
 
-    void termination();
+    void termination(long, long);
 
     unsigned long L1;
     unsigned long L2;

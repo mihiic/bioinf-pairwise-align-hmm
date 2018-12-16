@@ -73,12 +73,14 @@ void AlignmentModel::run(char *filenameA, char *filenameB) {
         lineA = readLine(fileA, (int) maxL1);
         lineB = readLine(fileB, (int) maxL2);
         recursion(maxL1, maxL2, lineA, lineB);
+        termination(maxL1, maxL2);
     }
 
     reserveMemory(leftover1, leftover2);
     lineA = readLine(fileA, (int) leftover1);
     lineB = readLine(fileB, (int) leftover2);
     recursion(leftover1, leftover2 - 1, lineA, lineB);
+    termination(leftover1, leftover2);
 
     fileA.close();
     fileB.close();
@@ -226,7 +228,14 @@ string AlignmentModel::readLine(ifstream &file, int lineSize) {
     return string(line);
 }
 
-void AlignmentModel::termination() {
-
+void AlignmentModel::termination(long l1, long l2) {
+    double max = 0;
+    for(int m = 0; m <= 4; m++){
+        if(max < viterbi[l1][l2][m] * transitions[m][4]){
+            max = viterbi[l1][l2][m] * transitions[m][4];
+            viterbi[l1+1][l2+1][4] = viterbi[l1][l2][m] * transitions[m][4];
+            point[l1+1][l2+1][4] = m;
+        }
+    }
 }
 
