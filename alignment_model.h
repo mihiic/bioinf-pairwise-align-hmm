@@ -21,6 +21,8 @@ public:
     void run(char* filenameA, char* filenameB);
     void reserveMemory(unsigned long, unsigned long);
     void calculateDimensions(ifstream &fileA, ifstream &fileB);
+    void recursion(long, long);
+    string readLine(ifstream&, int);
 
     unsigned long L1;
     unsigned long L2;

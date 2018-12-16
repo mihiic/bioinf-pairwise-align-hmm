@@ -59,14 +59,24 @@ void AlignmentModel::run(char *filenameA, char *filenameB) {
     L2 = 1;
 
     calculateDimensions(fileA, fileB);
+
+    string lineA;
+    string lineB;
     for (int i = 1; i <= totalLines; i++) {
         cout << "current line: " << i << endl;
-        if (i == totalLines) {
-            reserveMemory(leftover1, leftover2);
-        } else {
-            reserveMemory(maxL1, maxL2);
-        }
+        reserveMemory(maxL1, maxL2);
+        lineA = readLine(fileA, (int)maxL1);
+        lineB = readLine(fileB, (int)maxL2);
+
+        cout << lineA << endl;
+        cout << lineB << endl << endl;
     }
+
+    reserveMemory(leftover1, leftover2);
+    lineA = readLine(fileA, (int)leftover1);
+    lineB = readLine(fileB, (int)leftover2);
+    cout << lineA << endl;
+    cout << lineB << endl;
 
     fileA.close();
     fileB.close();
@@ -116,16 +126,16 @@ void AlignmentModel::calculateDimensions(ifstream &fileA, ifstream &fileB) {
 
     if (L1 > L2) {
         maxL1 = sampleSize;
-        maxL2 = (unsigned long)ceil(L2 / (L1 / (double)maxL1));
+        totalLines = (L1 / maxL1);
+        maxL2 = (unsigned long)floor(L2 / (double)totalLines);
     } else {
         maxL2 = sampleSize;
-        maxL1 = (unsigned long)ceil(L1 / (L2 / (double)maxL2));
+        totalLines = (L2 / maxL2);
+        maxL1 = (unsigned long)floor(L1 / (double)totalLines);
     }
 
     leftover1 = L1 % maxL1;
     leftover2 = L2 % maxL2;
-
-    totalLines = (L1 / maxL1) + 1;
 
     fileA.clear();
     fileB.clear();
@@ -138,7 +148,6 @@ void AlignmentModel::calculateDimensions(ifstream &fileA, ifstream &fileB) {
             break;
         }
     }
-    fileA.get(c);
 
     while (fileB.get(c)) {
         if (c == '\n') {
@@ -146,3 +155,28 @@ void AlignmentModel::calculateDimensions(ifstream &fileA, ifstream &fileB) {
         }
     }
 }
+
+void AlignmentModel::recursion(long l1, long l2) {
+    double max = 0;
+    for (int i = 0; i <= l1; i++) {
+
+    }
+}
+
+string AlignmentModel::readLine(ifstream &file, int lineSize) {
+    char line[256];
+    int currentIndex = 0;
+    char c;
+    while (currentIndex < lineSize && file.get(c)) {
+        if (c == '\n') {
+            continue;
+        }
+
+        line[currentIndex] = c;
+        currentIndex++;
+    }
+    line[currentIndex] = '\0';
+
+    return string(line);
+}
+
