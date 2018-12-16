@@ -17,11 +17,16 @@ AlignmentModel::AlignmentModel(unsigned long sample) {
     };
 
     emissions = {
-            {0,    0.25,       0.25,       0.25,       0.25 / 1.0},  // {"-, -"}, {"-, A"}, {"-, T"}, {"-, C"}, {"-, G"},
-            {0.25, 1.0 / 7.0,  1.0 / 28.0, 1.0 / 28.0, 1.00 / 28.0}, // {"A, -"}, {"A, A"}, {"A, T"}, {"A, C"}, {"A, G"},
-            {0.25, 1.0 / 28.0, 1.0 / 7.0,  1.0 / 28.0, 1.0 / 28.0},  // {"T, -"}, {"T, A"}, {"T, T"}, {"T, C"}, {"T, G"},
-            {0.25, 1.0 / 28.0, 1.0 / 28.0, 1.0 / 7.0,  1.0 / 28.0},  // {"C, -"}, {"C, A"}, {"C, T"}, {"C, C"}, {"C, G"},
-            {0.25, 1.0 / 28.0, 1.0 / 28.0, 1.0 / 28.0, 1.0 / 7.0}    // {"G, -"}, {"G, A"}, {"G, T"}, {"G, C"}, {"G, G"},
+            {0,    0.25,       0.25,       0.25,       0.25 /
+                                                       1.0},  // {"-, -"}, {"-, A"}, {"-, T"}, {"-, C"}, {"-, G"},
+            {0.25, 1.0 / 7.0,  1.0 / 28.0, 1.0 / 28.0, 1.00 /
+                                                       28.0}, // {"A, -"}, {"A, A"}, {"A, T"}, {"A, C"}, {"A, G"},
+            {0.25, 1.0 / 28.0, 1.0 / 7.0,  1.0 / 28.0, 1.0 /
+                                                       28.0},  // {"T, -"}, {"T, A"}, {"T, T"}, {"T, C"}, {"T, G"},
+            {0.25, 1.0 / 28.0, 1.0 / 28.0, 1.0 / 7.0,  1.0 /
+                                                       28.0},  // {"C, -"}, {"C, A"}, {"C, T"}, {"C, C"}, {"C, G"},
+            {0.25, 1.0 / 28.0, 1.0 / 28.0, 1.0 / 28.0, 1.0 /
+                                                       7.0}    // {"G, -"}, {"G, A"}, {"G, T"}, {"G, C"}, {"G, G"},
     };
 }
 
@@ -63,20 +68,17 @@ void AlignmentModel::run(char *filenameA, char *filenameB) {
     string lineA;
     string lineB;
     for (int i = 1; i <= totalLines; i++) {
-        cout << "current line: " << i << endl;
+        cout << i << endl;
         reserveMemory(maxL1, maxL2);
-        lineA = readLine(fileA, (int)maxL1);
-        lineB = readLine(fileB, (int)maxL2);
-
-        cout << lineA << endl;
-        cout << lineB << endl << endl;
+        lineA = readLine(fileA, (int) maxL1);
+        lineB = readLine(fileB, (int) maxL2);
+        recursion(maxL1, maxL2, lineA, lineB);
     }
 
     reserveMemory(leftover1, leftover2);
-    lineA = readLine(fileA, (int)leftover1);
-    lineB = readLine(fileB, (int)leftover2);
-    cout << lineA << endl;
-    cout << lineB << endl;
+    lineA = readLine(fileA, (int) leftover1);
+    lineB = readLine(fileB, (int) leftover2);
+    recursion(leftover1, leftover2 - 1, lineA, lineB);
 
     fileA.close();
     fileB.close();
@@ -104,7 +106,7 @@ void AlignmentModel::calculateDimensions(ifstream &fileA, ifstream &fileB) {
     char c;
     bool firstLine = false;
     while (fileA.get(c)) {
-        if (c != '\n') {
+        if (c != '\n' && c != '\0') {
             if (firstLine) {
                 L1 += 1;
             }
@@ -115,7 +117,7 @@ void AlignmentModel::calculateDimensions(ifstream &fileA, ifstream &fileB) {
 
     firstLine = false;
     while (fileB.get(c)) {
-        if (c != '\n') {
+        if (c != '\n' && c != '\0') {
             if (firstLine) {
                 L2 += 1;
             }
@@ -127,15 +129,15 @@ void AlignmentModel::calculateDimensions(ifstream &fileA, ifstream &fileB) {
     if (L1 > L2) {
         maxL1 = sampleSize;
         totalLines = (L1 / maxL1);
-        maxL2 = (unsigned long)floor(L2 / (double)totalLines);
+        maxL2 = (unsigned long) floor(L2 / (double) totalLines);
     } else {
         maxL2 = sampleSize;
         totalLines = (L2 / maxL2);
-        maxL1 = (unsigned long)floor(L1 / (double)totalLines);
+        maxL1 = (unsigned long) floor(L1 / (double) totalLines);
     }
 
-    leftover1 = L1 % maxL1;
-    leftover2 = L2 % maxL2;
+    leftover1 = L1 - maxL1 * totalLines;
+    leftover2 = L2 - maxL2 * totalLines;
 
     fileA.clear();
     fileB.clear();
@@ -156,10 +158,54 @@ void AlignmentModel::calculateDimensions(ifstream &fileA, ifstream &fileB) {
     }
 }
 
-void AlignmentModel::recursion(long l1, long l2) {
+void AlignmentModel::recursion(long l1, long l2, string &line1, string &line2) {
     double max = 0;
+    cout << line1 << endl;
+    cout << line2 << endl;
     for (int i = 0; i <= l1; i++) {
+        for (int j = 0; j <= l2; j++) {
+            if (i == 0 && j == 0) {
+                continue;
+            }
 
+            for (int k = 1; k <= 3; k++) {
+                if (k == 1 && i > 0 && j > 0) {
+                    for (int m = 0; m <= 4; m++) {
+                        if (max < viterbi[i - 1][j - 1][m] * transitions[m][k]) {
+                            max = viterbi[i - 1][j - 1][m] * transitions[m][k];
+                            viterbi[i][j][k] = getEmissionProb(
+                                    line1.at((unsigned long) (i - 1)), line2.at((unsigned long) (j - 1))
+                            ) * viterbi[i - 1][j - 1][m] * transitions[m][k];
+
+                            point[i][j][k] = m;
+                        }
+                    }
+                    max = 0;
+                } else if (k == 2 && i > 0) {
+                    for (int m = 0; m <= 4; m++) {
+                        if (max < viterbi[i - 1][j][m] * transitions[m][k]) {
+                            max = viterbi[i - 1][j][m] * transitions[m][k];
+                            viterbi[i][j][k] = getEmissionProb(
+                                    line1.at((unsigned long) i - 1), '-'
+                            ) * viterbi[i - 1][j][m] * transitions[m][k];
+                            point[i][j][k] = m;
+                        }
+                    }
+                    max = 0;
+                } else if (k == 3 && j > 0) {
+                    for (int m = 0; m <= 4; m++) {
+                        if (max < viterbi[i][j - 1][m] * transitions[m][k]) {
+                            max = viterbi[i][j - 1][m] * transitions[m][k];
+                            viterbi[i][j][k] = getEmissionProb(
+                                    '-', line2.at((unsigned long) j - 1)
+                            ) * viterbi[i][j - 1][m] * transitions[m][k];
+                            point[i][j][k] = m;
+                        }
+                    }
+                    max = 0;
+                }
+            }
+        }
     }
 }
 
@@ -178,5 +224,9 @@ string AlignmentModel::readLine(ifstream &file, int lineSize) {
     line[currentIndex] = '\0';
 
     return string(line);
+}
+
+void AlignmentModel::termination() {
+
 }
 
