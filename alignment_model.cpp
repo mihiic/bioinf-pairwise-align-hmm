@@ -74,6 +74,7 @@ void AlignmentModel::run(char *filenameA, char *filenameB) {
         lineB = readLine(fileB, (int) maxL2);
         recursion(maxL1, maxL2, lineA, lineB);
         termination(maxL1, maxL2);
+        traceback(maxL1, maxL2);
     }
 
     reserveMemory(leftover1, leftover2);
@@ -81,6 +82,7 @@ void AlignmentModel::run(char *filenameA, char *filenameB) {
     lineB = readLine(fileB, (int) leftover2);
     recursion(leftover1, leftover2 - 1, lineA, lineB);
     termination(leftover1, leftover2);
+    traceback(leftover1, leftover2 - 1);
 
     fileA.close();
     fileB.close();
@@ -230,12 +232,34 @@ string AlignmentModel::readLine(ifstream &file, int lineSize) {
 
 void AlignmentModel::termination(long l1, long l2) {
     double max = 0;
-    for(int m = 0; m <= 4; m++){
-        if(max < viterbi[l1][l2][m] * transitions[m][4]){
+    for (int m = 0; m <= 4; m++) {
+        if (max < viterbi[l1][l2][m] * transitions[m][4]) {
             max = viterbi[l1][l2][m] * transitions[m][4];
-            viterbi[l1+1][l2+1][4] = viterbi[l1][l2][m] * transitions[m][4];
-            point[l1+1][l2+1][4] = m;
+            viterbi[l1 + 1][l2 + 1][4] = viterbi[l1][l2][m] * transitions[m][4];
+            point[l1 + 1][l2 + 1][4] = m;
         }
+    }
+}
+
+void AlignmentModel::traceback(long l1, long l2) {
+    statePath.resize(0);
+    statePath.push_back(4);
+    int statePathIndex = 0;
+    long l1Index = l1 + 1;
+    long l2Index = l2 + 1;
+
+    while ((l1Index > 0 || l2Index > 0) && statePath.at((unsigned long) statePathIndex) != 0) {
+        long currState = statePath.at((unsigned long) statePathIndex);
+        statePath.push_back(point[l1Index][l2Index][currState]);
+        if (currState == 1 || currState == 4) {
+            l1Index--;
+            l2Index--;
+        } else if (currState == 2) {
+            l1Index--;
+        } else if (currState == 3) {
+            l2Index--;
+        }
+        statePathIndex++;
     }
 }
 

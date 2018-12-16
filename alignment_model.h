@@ -25,6 +25,7 @@ public:
     string readLine(ifstream&, int);
 
     void termination(long, long);
+    void traceback(long, long);
 
     unsigned long L1;
     unsigned long L2;
@@ -36,6 +37,8 @@ public:
 
     vector<vector<vector<double>>> viterbi;
     vector<vector<vector<long>>> point;
+
+    vector<long> statePath;
 
     static const int BLANK = 0;
     static const int A = 1;
