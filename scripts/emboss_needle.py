@@ -76,6 +76,7 @@ for i in range(len(all_sequences)):
     fa = open(sequences_directory + all_sequences[i], 'r')
     asequence = fa.read()
     fa.close()
+    print("Started for " + str(i))
     for j in range(i+1, len(all_sequences)):
         fb = open(sequences_directory + all_sequences[j], 'r')
         bsequence = fb.read()
@@ -88,6 +89,8 @@ for i in range(len(all_sequences)):
             pass
 
         get_result(job_ID, directory_to_store + "alignment_" + str(i) + "_and_" + str(j) + ".fasta")
+
+    print("Finished for " + str(i))
 
 print("DONE!")
 
