@@ -21,6 +21,17 @@ public:
     void run(char* filenameA, char* filenameB);
     void reserveMemory(unsigned long, unsigned long);
     void calculateDimensions(ifstream &fileA, ifstream &fileB);
+    void recursion(long, long, string&, string&);
+    string readLine(ifstream&, int);
+
+    void termination(long, long);
+    void traceback(long, long);
+    void convertPredictedAlignment(string&, string&);
+
+    void writePredictionHeaders(ofstream&, ofstream&);
+    void writePredictions(ofstream&, ofstream&);
+
+    void concatePredictions();
 
     unsigned long L1;
     unsigned long L2;
@@ -30,8 +41,17 @@ public:
     unsigned long leftover2;
     unsigned long totalLines;
 
+    int currentLine;
+
+    char header1[256];
+    char header2[256];
+
     vector<vector<vector<double>>> viterbi;
     vector<vector<vector<long>>> point;
+
+    vector<long> statePath;
+    vector<char> predictedAlignmentA;
+    vector<char> predictedAlignmentB;
 
     static const int BLANK = 0;
     static const int A = 1;
