@@ -111,6 +111,8 @@ for i in range(5):
     transitions_matrix[ix_state][i] /= sum_ix
     transitions_matrix[iy_state][i] /= sum_iy
 
+print("TRANSITION MATRIX: \n")
+
 for i in range(5):
     row = ""
     for j in range(5):
@@ -118,3 +120,37 @@ for i in range(5):
 
     row = row + "\n"
     print(row)
+
+
+print("\nEMISSION MATRIX: \n")
+
+sum_emission_match = 0
+
+for i in range(1, 5):
+    for j in range(1, 5):
+        sum_emission_match += emissions_matrix[i][j]
+
+for i in range(1, 5):
+    for j in range(1, 5):
+        emissions_matrix[i][j] /= sum_emission_match
+
+sum_emission_ix = 0
+sum_emission_iy = 0
+
+for i in range(5):
+    sum_emission_ix += emissions_matrix[0][i]
+    sum_emission_iy += emissions_matrix[i][0]
+
+for i in range(5):
+    emissions_matrix[0][i] /= sum_emission_ix
+    emissions_matrix[i][0] /= sum_emission_iy
+
+
+for i in range(5):
+    row = ""
+    for j in range(5):
+        row = row + str(emissions_matrix[i][j]) + " "
+
+    row = row + "\n"
+    print(row)
+
