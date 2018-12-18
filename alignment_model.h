@@ -18,20 +18,22 @@ public:
     double getEmissionProb(char i, char j);
     int charToIndex(char x);
 
-    void run(char* filenameA, char* filenameB);
+    void run(char* filenameA, char* filenameB, char* outputFilename, char* transmissionFilename, char* emissionFilename); //
+    void loadTransition(char* filename);
+    void loadEmission(char* filename);
     void reserveMemory(unsigned long, unsigned long);
     void calculateDimensions(ifstream &fileA, ifstream &fileB);
-    void recursion(long, long, string&, string&);
+    double recursion(long, long, string&, string&);
     string readLine(ifstream&, int);
 
-    void termination(long, long);
+    void termination(long, long, double);
     void traceback(long, long);
     void convertPredictedAlignment(string&, string&);
 
     void writePredictionHeaders(ofstream&, ofstream&);
     void writePredictions(ofstream&, ofstream&);
 
-    void concatePredictions();
+    void concatePredictions(char* filename);
 
     unsigned long L1;
     unsigned long L2;
