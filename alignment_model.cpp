@@ -314,7 +314,7 @@ double AlignmentModel::recursion(long l1, long l2, string &line1, string &line2)
 }
 
 string AlignmentModel::readLine(ifstream &file, int lineSize) {
-    char line[8192];
+    char line[4096];
     int currentIndex = 0;
     char c;
     while (currentIndex < lineSize && file.get(c)) {
