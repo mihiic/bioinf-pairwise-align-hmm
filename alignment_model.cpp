@@ -61,7 +61,7 @@ int AlignmentModel::charToIndex(char x) {
     return 0;
 }
 
-void AlignmentModel::loadTransition(char* filename) {
+void AlignmentModel::loadTransition(char *filename) {
     ifstream file(filename);
     transitions.resize(0);
     transitions.resize(5, {});
@@ -94,7 +94,7 @@ void AlignmentModel::loadTransition(char* filename) {
     file.close();
 }
 
-void AlignmentModel::loadEmission(char* filename) {
+void AlignmentModel::loadEmission(char *filename) {
     ifstream file(filename);
     emissions.resize(0);
     emissions.resize(5, {});
@@ -127,7 +127,8 @@ void AlignmentModel::loadEmission(char* filename) {
     file.close();
 }
 
-void AlignmentModel::run(char *filenameA, char *filenameB, char* outputFilename, char* transmissionFilename, char* emissionFilename) { //
+void AlignmentModel::run(char *filenameA, char *filenameB, char *outputFilename, char *transmissionFilename,
+                         char *emissionFilename) { //
     loadTransition(transmissionFilename);
     loadEmission(emissionFilename);
 
@@ -137,7 +138,7 @@ void AlignmentModel::run(char *filenameA, char *filenameB, char* outputFilename,
     ofstream outB("predictions/b.fasta");
 
     L1 = 0;
-    L2 = 1;
+    L2 = 0;
 
     calculateDimensions(fileA, fileB);
     writePredictionHeaders(outA, outB);
@@ -192,37 +193,44 @@ void AlignmentModel::reserveMemory(unsigned long l1, unsigned long l2) {
 
 void AlignmentModel::calculateDimensions(ifstream &fileA, ifstream &fileB) {
     char c;
-    bool firstLine = false;
+    bool passedFirstLine = false;
     int i = 0;
     while (fileA.get(c)) {
-        if (c == 'A' || c == 'G' || c == 'T' || c == 'C') {
-            if (firstLine) {
-                L1 += 1;
-            } else {
-                header1[i] = c;
-                i++;
-            }
-        } else if (c == '\n'){
+        if (c == '\n' && !passedFirstLine) {
+            passedFirstLine = true;
             header1[i] = '\0';
-            firstLine = true;
+            continue;
+        }
+        if (passedFirstLine) {
+            if (c == 'A' || c == 'G' || c == 'T' || c == 'C') {
+                L1 += 1;
+            }
+        } else {
+            header1[i] = c;
+            i++;
         }
     }
 
     i = 0;
-    firstLine = false;
+    passedFirstLine = false;
     while (fileB.get(c)) {
-        if (c == 'A' || c == 'G' || c == 'T' || c == 'C') {
-            if (firstLine) {
-                L2 += 1;
-            } else {
-                header2[i] = c;
-                i++;
-            }
-        } else if (c == '\n'){
+        if (c == '\n' && !passedFirstLine) {
+            passedFirstLine = true;
             header2[i] = '\0';
-            firstLine = true;
+            continue;
+        }
+        if (passedFirstLine) {
+            if (c == 'A' || c == 'G' || c == 'T' || c == 'C') {
+                L2 += 1;
+            }
+        } else {
+            header2[i] = c;
+            i++;
         }
     }
+
+    cout << header1 << endl;
+    cout << header2 << endl;
 
 //    L2 -= 1;
 //    L1 -= 1;
@@ -231,17 +239,17 @@ void AlignmentModel::calculateDimensions(ifstream &fileA, ifstream &fileB) {
     if (L1 > L2) {
         maxL1 = sampleSize;
         totalLines = (L1 / maxL1);
-        tl = (double)L1 / maxL1;
-        maxL2 = (unsigned long)(L2 / tl);
+        tl = (double) L1 / maxL1;
+        maxL2 = (unsigned long) (L2 / tl);
     } else {
         maxL2 = sampleSize;
         totalLines = (L2 / maxL2);
-        tl = (double)L2 / maxL2;
-        maxL1 = (unsigned long)(L2 / tl);
+        tl = (double) L2 / maxL2;
+        maxL1 = (unsigned long) (L2 / tl);
     }
 
-    leftover1 = L1 - maxL1 * totalLines - 1;
-    leftover2 = L2 - maxL2 * totalLines - 1;
+    leftover1 = L1 - maxL1 * totalLines;
+    leftover2 = L2 - maxL2 * totalLines;
 
     fileA.clear();
     fileB.clear();
@@ -438,7 +446,7 @@ void AlignmentModel::writePredictions(ofstream &fileA, ofstream &fileB) {
     fileB.flush();
 }
 
-void AlignmentModel::concatePredictions(char* filename) {
+void AlignmentModel::concatePredictions(char *filename) {
     ifstream file1("predictions/a.fasta");
     ifstream file2("predictions/b.fasta");
     ofstream combined_file(filename);
