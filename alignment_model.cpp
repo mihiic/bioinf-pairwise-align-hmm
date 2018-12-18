@@ -158,8 +158,6 @@ void AlignmentModel::run(char *filenameA, char *filenameB, char* outputFilename,
     reserveMemory(leftover1, leftover2);
     lineA = readLine(fileA, (int) leftover1);
     lineB = readLine(fileB, (int) leftover2);
-    cout << lineA << endl;
-    cout << lineB << endl;
     double m = recursion(leftover1, leftover2, lineA, lineB);
     termination(leftover1, leftover2, m);
     traceback(leftover1, leftover2);
@@ -244,14 +242,6 @@ void AlignmentModel::calculateDimensions(ifstream &fileA, ifstream &fileB) {
 
     leftover1 = L1 - maxL1 * totalLines - 1;
     leftover2 = L2 - maxL2 * totalLines - 1;
-
-    cout << totalLines << endl;
-    cout << L1 << endl;
-    cout << L2 << endl;
-    cout << maxL1 << endl;
-    cout << maxL2 << endl;
-    cout << leftover1 << endl;
-    cout << leftover2 << endl;
 
     fileA.clear();
     fileB.clear();
@@ -423,7 +413,6 @@ void AlignmentModel::writePredictionHeaders(ofstream &fileA, ofstream &fileB) {
 }
 
 void AlignmentModel::writePredictions(ofstream &fileA, ofstream &fileB) {
-    cout << "huja haj";
     int temp = currentLine;
     for (char i : predictedAlignmentA) {
         fileA << i;
@@ -459,7 +448,7 @@ void AlignmentModel::concatePredictions(char* filename) {
     file1.close();
     file2.close();
 
-//    remove("predictions/a.fasta");
-//    remove("predictions/b.fasta");
+    remove("predictions/a.fasta");
+    remove("predictions/b.fasta");
 }
 
