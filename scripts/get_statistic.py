@@ -93,7 +93,6 @@ for filename in all_files:
             last_state = current_state
     transitions_matrix[last_state][end_state] += 1
 
-
 sum_begin = 0
 sum_match = 0
 sum_ix = 0
@@ -111,16 +110,19 @@ for i in range(5):
     transitions_matrix[ix_state][i] /= sum_ix
     transitions_matrix[iy_state][i] /= sum_iy
 
-print("TRANSITION MATRIX: \n")
+transition_matrix_file = open("transition_matrix.txt", "w")
 
 for i in range(5):
-    row = ""
+    to_file = ""
     for j in range(5):
-        row = row + str(transitions_matrix[i][j]) + " "
+        if j == 4:
+            to_file = to_file + " " + str(transitions_matrix[i][j])
+            continue
+        to_file = to_file + str(transitions_matrix[i][j]) + ","
+    to_file = to_file + "\n"
+    transition_matrix_file.write(to_file)
 
-    row = row + "\n"
-    print(row)
-
+transition_matrix_file.close()
 
 print("\nEMISSION MATRIX: \n")
 
@@ -145,12 +147,16 @@ for i in range(5):
     emissions_matrix[0][i] /= sum_emission_ix
     emissions_matrix[i][0] /= sum_emission_iy
 
-
+emission_matrix_file = open("emission_matrix.txt", "w")
 for i in range(5):
-    row = ""
+    to_file = ""
     for j in range(5):
-        row = row + str(emissions_matrix[i][j]) + " "
+        if j == 4:
+            to_file = to_file + " " + str(emissions_matrix[i][j])
+            continue
+        to_file = to_file + str(emissions_matrix[i][j]) + ","
+    to_file = to_file + "\n"
+    emission_matrix_file.write(to_file)
 
-    row = row + "\n"
-    print(row)
+emission_matrix_file.close()
 
