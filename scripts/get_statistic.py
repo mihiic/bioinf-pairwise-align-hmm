@@ -124,7 +124,6 @@ for i in range(5):
 
 transition_matrix_file.close()
 
-print("\nEMISSION MATRIX: \n")
 
 sum_emission_match = 0
 
