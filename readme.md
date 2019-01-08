@@ -1,6 +1,6 @@
 # Bioinformatics course - Pairwise alignment using HMM
 
-###Prerequisites
+### Prerequisites
 
 - **python3** (comes native with Linux distributions)
 - **biopython** (https://biopython.org/)
@@ -95,3 +95,5 @@ exists before running the program.
 
 
 **Faculty of Engineering and Computing (FER),  Zagreb 2018./2019. © Matej Jularić, Mihael Međan**
+
+![alt text](https://upload.wikimedia.org/wikipedia/en/2/27/Fakultet_elektrotehnike_i_ra%C4%8Dunarstva%2C_Sveu%C4%8Dili%C5%A1te_u_Zagrebu_%28logo%29.jpg)
