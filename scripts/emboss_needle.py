@@ -6,14 +6,18 @@ import os
 
 option_parser = optparse.OptionParser()
 
-option_parser.add_option('--email', action="store", dest="email", default=None)
+option_parser.add_option('--email', action="store", dest="email",
+                         help="email to send notification when done", default=None)
 option_parser.add_option('--matrix', action="store", dest="matrix", default="EDNAFULL")
 option_parser.add_option('--gapopen', action="store", dest="gapopen", default="10")
 option_parser.add_option('--gapext', action="store", dest="gapext", default="0.5")
 option_parser.add_option('--endweight', action="store", dest="endweight", default="false")
 option_parser.add_option('--endopen', action="store", dest="endopen", default="10")
 option_parser.add_option('--endextend', action="store", dest="endextend", default="0.5")
-option_parser.add_option('--dir', action="store", dest="dir", default=None)
+option_parser.add_option('--dir', action="store", dest="dir",
+                         help="path to directory containg sequences", default=None)
+option_parser.add_option('--genomename', action="store", dest="genomename",
+                         help="name of the genome", default=None)
 
 
 options, args = option_parser.parse_args()
@@ -29,7 +33,7 @@ if options.dir is None:
 
 base_url = "https://www.ebi.ac.uk/Tools/services/rest/emboss_needle"
 
-params = {'email': options.email, 'title': "HIV", 'matrix': options.matrix, 'gapopen': options.gapopen,
+params = {'email': options.email, 'title': options.genomename, 'matrix': options.matrix, 'gapopen': options.gapopen,
           'gapext': options.gapext, 'endweight': options.endweight, 'endopen': options.endopen,
           'endextend': options.endextend, 'format': "fasta", 'stype': "dna"}
 
