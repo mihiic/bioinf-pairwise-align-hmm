@@ -229,12 +229,6 @@ void AlignmentModel::calculateDimensions(ifstream &fileA, ifstream &fileB) {
         }
     }
 
-    cout << header1 << endl;
-    cout << header2 << endl;
-
-//    L2 -= 1;
-//    L1 -= 1;
-
     double tl;
     if (L1 > L2) {
         maxL1 = sampleSize;
