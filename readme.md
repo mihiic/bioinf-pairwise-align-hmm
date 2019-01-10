@@ -19,6 +19,7 @@ The **/scripts** folder contains the following:
 - check_alphabet.py
 - emboss_needle.py
 - get_hmm_params.py
+- compare_alignment.py
 
 
 **multiple_align_to_seq.py**
@@ -81,6 +82,30 @@ The results are stored in emision_matrix.txt and transition_matrix.txt
 For additional help run:
 ```
 python3 get_hmm_params.py --help
+```
+
+**compare_alignment.py**
+
+Gives comparison of alignments between two files containing alignments or between multiple files in different directories.
+```
+python3 compare_alignment.py --mode file|dir --path1 <path_to_file_or_dir> --path2 <path_to_file_or_dir>
+```
+
+For additional help run:
+
+```
+python3 compare_alignment.py --help
+```
+
+
+**hmm_wrapper.py**
+
+Wraps the C++ code that runs the HMM alignment.
+
+Run help for all the necessary parameters:
+
+```
+python3 hmm_wrapper.py --help
 ```
 
 
