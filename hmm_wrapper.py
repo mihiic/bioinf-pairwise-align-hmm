@@ -39,5 +39,6 @@ for i in range(len(all_sequences)):
         outfile = directory_to_store + "/" + "alignment_" + str(i) + "_and_" + str(j) + ".fasta"
         seq_B = options.dir + "/" + all_sequences[j]
         subprocess.call([options.exe, seq_A, seq_B, outfile, options.transition, options.emission])
+        print("Finished: " + outfile)
 
     print("DONE FOR: " + str(i))
