@@ -239,7 +239,7 @@ void AlignmentModel::calculateDimensions(ifstream &fileA, ifstream &fileB) {
         maxL2 = sampleSize;
         totalLines = (L2 / maxL2);
         tl = (double) L2 / maxL2;
-        maxL1 = (unsigned long) (L2 / tl);
+        maxL1 = (unsigned long) (L1 / tl);
     }
 
     leftover1 = L1 - maxL1 * totalLines;
