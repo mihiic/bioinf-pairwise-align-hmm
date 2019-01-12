@@ -4,6 +4,7 @@
 
 - **python3** (comes native with Linux distributions)
 - **biopython** (https://biopython.org/)
+- **emboss tools need to be installed on system** (http://emboss.sourceforge.net/)
 
 To install biopython run:
 
@@ -15,19 +16,20 @@ sudo pip3 install biopython
 
 The **/scripts** folder contains the following:  
 
-- multiple_align_to_seq.py
+- multiple_to_seq.py
 - check_alphabet.py
 - emboss_needle.py
 - get_hmm_params.py
 - compare_alignment.py
 
 
-**multiple_align_to_seq.py**
+**multiple_to_seq.py**
 
-Converts a multiple alignment fasta file to original sequences. Usage:
+Splits a FASTA file containing more sequnces into multiple files. You can choose to remove 
+gaps or to convert sequnces to upper case letters. Usage:
 
 ```
-python3 multiple_align_to_seq.py <path_to_file>
+python3 multiple_align_to_seq.py --mode ungap|toupper --filename <pat>
 ```
 
 Path can be relative to the script file or absolute.
@@ -50,23 +52,24 @@ For additional help run:
 python3 check_alphabet.py --help
 ```
 
-**emboss_needle.py**
+**optimal_align.py**
 
 Given a directory of sequences the script calculates optimal global alignments
-between each pair using the online tool https://www.ebi.ac.uk/Tools/psa/emboss_needle/nucleotide.html
+between each pair using the needle (Needleman-Wunsch) or stretcher (Rapid Needleman-Wunsch) 
+command line tool from EMBOSS (http://emboss.sourceforge.net/). Usage:
 
 ```
-python3 emboss_needle.py --email <your_email> --dir <path_to_directory_containing_seqeunces> --genomename <name_of_the_organism>
+python3 optimal_align.py --mode needle|stretcher --dir <path_to_directory_containing_seqeunces> --genomename <name_of_the_organism>
 ```
 
 The results are stored in a directory that the script will create (pairwise_alignment_ + genomename param).
 
 For additional help run:
 ```
-python3 emboss_needle.py --help
+python3 optimal_align.py --help
 ```
 
-The emboss_needle.py script **won't accept files bigger than 1 MB**.
+**Files bigger than 1 MB are slowly aligned!**
 
 
 **get_hmm_params.py**

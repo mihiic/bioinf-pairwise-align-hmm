@@ -2,8 +2,9 @@ from Bio import SeqIO
 import optparse
 import os
 
-gap_open = 10
-gap_extend = 0.5
+gap_open = -10
+gap_extend = -0.5
+
 
 def score(path):
     records = []
