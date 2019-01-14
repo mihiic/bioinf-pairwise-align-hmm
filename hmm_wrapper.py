@@ -28,7 +28,7 @@ if not os.path.exists(options.exe):
 
 all_sequences = os.listdir(options.dir)
 
-directory_to_store = "scripts/pairwise_alignment_HMM_HIV"
+directory_to_store = "scripts/pairwise_alignment_HMM_random10000"
 
 if not os.path.exists(directory_to_store):
     print("Creating directory " + directory_to_store)
@@ -45,7 +45,7 @@ for i in range(len(all_sequences)):
 
         # zadnji argument je target sample size
         t1 = time.time()
-        subprocess.call([options.exe, seq_A, seq_B, outfile, options.transition, options.emission, '300'])
+        subprocess.call([options.exe, seq_A, seq_B, outfile, options.transition, options.emission, '250'])
         t2 = time.time()
 
         delta = t2 - t1

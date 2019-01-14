@@ -75,11 +75,11 @@ if options.mode == 'file':
 if options.mode == 'dir':
     all_files1 = os.listdir(options.path1)
     all_files2 = os.listdir(options.path2)
-    '''
+
     if len(all_files1) != len(all_files2):
         print("ERROR! Directories don't contain the same number of file!")
         exit(0)
-    '''
+
     length = len(all_files2)
     result = 0
     diff = 0
@@ -92,7 +92,7 @@ if options.mode == 'dir':
         res_optimal.append(result1)
         result2 = score(options.path2 + "/" + all_files2[i])
         res_hmm.append(result2)
-        diff = diff + (result1 - result2)
+        diff = diff + abs(abs(result1) - abs(result2))
     print("MAX OPTIMAL ALIGNMENT SCORE: " + str(max(res_optimal)))
     print("MIN OPTIMAL ALIGNMENT SCORE: " + str(min(res_optimal)))
     print("MAX HMM SCORE: " + str(max(res_hmm)))

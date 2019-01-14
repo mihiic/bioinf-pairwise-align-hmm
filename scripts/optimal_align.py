@@ -53,7 +53,7 @@ for i in range(len(all_sequences)):
 
         if options.mode == "stretcher":
             stretcher_cli = StretcherCommandline(asequence=asequence, bsequence=bsequence,
-                                           gapopen=16.0, gapextend=4.0, outfile=outfile, aformat="fasta")
+                                           gapopen=16, gapextend=4, outfile=outfile, aformat="fasta")
             stdout, stderr = stretcher_cli()
         t2 = time.time()
         delta = t2 - t1
