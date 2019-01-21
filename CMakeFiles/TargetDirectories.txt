@@ -1,0 +1,3 @@
+/home/m/fax/bionf/CMakeFiles/rebuild_cache.dir
+/home/m/fax/bionf/CMakeFiles/bionf.dir
+/home/m/fax/bionf/CMakeFiles/edit_cache.dir

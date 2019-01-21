@@ -1,0 +1,32 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/m/fax/bionf/alignment_model.cpp
+alignment_model.h
+/home/m/fax/bionf/alignment_model.h
+iostream
+-
+fstream
+-
+string
+-
+cmath
+-
+cstdio
+-
+limits
+-
+cfloat
+-
+
+/home/m/fax/bionf/alignment_model.h
+vector
+-
+fstream
+-
+

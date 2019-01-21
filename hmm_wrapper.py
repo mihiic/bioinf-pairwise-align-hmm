@@ -40,7 +40,7 @@ for i in range(len(all_sequences)):
         seq_B = options.dir + "/" + all_sequences[j]
 
         # zadnji argument je target sample size
-        subprocess.call([options.exe, seq_A, seq_B, outfile, options.transition, options.emission, '128'])
+        subprocess.call([options.exe, seq_A, seq_B, outfile, options.transition, options.emission, '4096'])
         print("Finished: " + outfile)
 
     print("DONE FOR: " + str(i))

@@ -362,6 +362,10 @@ void AlignmentModel::traceback(long l1, long l2) {
         }
         statePathIndex++;
     }
+
+    for (auto x : statePath) {
+        cout << x << endl;
+    }
 }
 
 void AlignmentModel::convertPredictedAlignment(string &lineA, string &lineB) {

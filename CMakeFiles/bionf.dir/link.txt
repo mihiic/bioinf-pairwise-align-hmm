@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/bionf.dir/main.cpp.o CMakeFiles/bionf.dir/alignment_model.cpp.o  -o bionf 

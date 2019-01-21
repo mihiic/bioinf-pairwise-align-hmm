@@ -8,7 +8,7 @@ int main(int argc, char** argv) {
         AlignmentModel model((unsigned long)stoi(argv[6]));
         model.run(argv[1], argv[2], argv[3], argv[4], argv[5]); //
     } else {
-        AlignmentModel model(128);
+        AlignmentModel model(4096);
         model.run(argv[1], argv[2], argv[3], argv[4], argv[5]); //
     }
     return 0;
