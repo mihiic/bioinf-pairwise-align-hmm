@@ -1,0 +1,1 @@
+python3 ./hmm_wrapper.py --dir scripts/parsed_sequences_HIV1_REF_2010_genome_DNA.fasta --emission scripts/emission_matrix.txt --transition scripts/transition_matrix.txt --exe /home/m/fax/bionf/bionf
